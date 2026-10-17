@@ -1,264 +1,360 @@
 
--- NopHub V1 | Blue Edition
--- UI template for your own Roblox experience
--- Place as a LocalScript in StarterPlayerScripts
+-- NopHub Blue V5 - Mobile UI
+-- Giao dien demo, khong chua chuc nang exploit
 
 local Players = game:GetService("Players")
+local UIS = game:GetService("UserInputService")
+
 local player = Players.LocalPlayer
 local playerGui = player:WaitForChild("PlayerGui")
 
 local old = playerGui:FindFirstChild("NopHub")
 if old then old:Destroy() end
 
-local blue = Color3.fromRGB(0, 135, 255)
-local darkBlue = Color3.fromRGB(8, 20, 42)
-local panelBlue = Color3.fromRGB(12, 35, 70)
-local textColor = Color3.fromRGB(245, 248, 255)
+local BLUE = Color3.fromRGB(0, 145, 255)
+local BG = Color3.fromRGB(15, 21, 33)
+local PANEL = Color3.fromRGB(24, 34, 51)
+local WHITE = Color3.fromRGB(240, 246, 255)
 
 local gui = Instance.new("ScreenGui")
 gui.Name = "NopHub"
 gui.ResetOnSpawn = false
+gui.DisplayOrder = 999
 gui.Parent = playerGui
 
 local main = Instance.new("Frame")
-main.Name = "Main"
-main.Size = UDim2.new(0.92, 0, 0, 500)
-main.Position = UDim2.new(0.04, 0, 0.18, 0)
-main.BackgroundColor3 = darkBlue
+main.Size = UDim2.fromOffset(340, 300)
+main.Position = UDim2.new(0.5, -170, 0.5, -150)
+main.BackgroundColor3 = BG
 main.BorderSizePixel = 0
 main.Active = true
-main.Draggable = true
 main.Parent = gui
 
-local corner = Instance.new("UICorner")
-corner.CornerRadius = UDim.new(0, 14)
-corner.Parent = main
+Instance.new("UICorner", main).CornerRadius =
+    UDim.new(0, 12)
+
+local outline = Instance.new("UIStroke", main)
+outline.Color = BLUE
+outline.Thickness = 2
 
 local header = Instance.new("Frame")
-header.Size = UDim2.new(1, 0, 0, 52)
-header.BackgroundColor3 = panelBlue
+header.Size = UDim2.new(1, 0, 0, 42)
+header.BackgroundColor3 = BLUE
 header.BorderSizePixel = 0
 header.Parent = main
+header.Active = true
 
-local headerCorner = Instance.new("UICorner")
-headerCorner.CornerRadius = UDim.new(0, 14)
-headerCorner.Parent = header
+Instance.new("UICorner", header).CornerRadius =
+    UDim.new(0, 12)
 
 local title = Instance.new("TextLabel")
 title.Size = UDim2.new(1, -90, 1, 0)
-title.Position = UDim2.fromOffset(14, 0)
+title.Position = UDim2.fromOffset(12, 0)
 title.BackgroundTransparency = 1
-title.Text = "🔵 NopHub V1"
-title.TextColor3 = textColor
+title.Text = "NopHub | Blue V5"
+title.TextColor3 = WHITE
 title.Font = Enum.Font.GothamBold
-title.TextSize = 21
+title.TextSize = 16
 title.TextXAlignment = Enum.TextXAlignment.Left
 title.Parent = header
 
-local close = Instance.new("TextButton")
-close.Size = UDim2.fromOffset(34, 34)
-close.Position = UDim2.new(1, -42, 0, 9)
-close.BackgroundColor3 = blue
-close.Text = "X"
-close.TextColor3 = textColor
-close.Font = Enum.Font.GothamBold
-close.TextSize = 16
-close.Parent = header
-
-local closeCorner = Instance.new("UICorner")
-closeCorner.CornerRadius = UDim.new(0, 8)
-closeCorner.Parent = close
-
-close.Activated:Connect(function()
-    gui:Destroy()
-end)
-
-local sidebar = Instance.new("Frame")
-sidebar.Position = UDim2.fromOffset(0, 52)
-sidebar.Size = UDim2.new(0, 112, 1, -52)
-sidebar.BackgroundColor3 = Color3.fromRGB(6, 16, 34)
-sidebar.BorderSizePixel = 0
-sidebar.Parent = main
-
-local content = Instance.new("ScrollingFrame")
-content.Position = UDim2.fromOffset(122, 62)
-content.Size = UDim2.new(1, -132, 1, -74)
-content.BackgroundTransparency = 1
-content.BorderSizePixel = 0
-content.ScrollBarThickness = 4
-content.ScrollBarImageColor3 = blue
-content.CanvasSize = UDim2.new()
-content.AutomaticCanvasSize = Enum.AutomaticSize.Y
-content.Parent = main
-
-local contentLayout = Instance.new("UIListLayout")
-contentLayout.Padding = UDim.new(0, 8)
-contentLayout.Parent = content
-
-local pages = {
-    "Trang chủ",
-    "Sự kiện",
-    "Cày cuốc",
-    "Cướp trứng",
-    "Cài đặt"
-}
-
-local function clearContent()
-    for _, item in ipairs(content:GetChildren()) do
-        if item:IsA("GuiObject")
-            and not item:IsA("UIListLayout") then
-            item:Destroy()
-        end
-    end
+local function makeHeaderButton(text, x)
+    local b = Instance.new("TextButton")
+    b.Size = UDim2.fromOffset(32, 30)
+    b.Position = UDim2.new(1, x, 0, 6)
+    b.BackgroundColor3 = Color3.fromRGB(0, 105, 205)
+    b.Text = text
+    b.TextColor3 = WHITE
+    b.TextSize = 17
+    b.Font = Enum.Font.GothamBold
+    b.Parent = header
+    Instance.new("UICorner", b).CornerRadius =
+        UDim.new(0, 7)
+    return b
 end
 
-local function addLabel(text, height)
+local minimize = makeHeaderButton("−", -72)
+local close = makeHeaderButton("X", -36)
+
+local body = Instance.new("Frame")
+body.Position = UDim2.fromOffset(8, 50)
+body.Size = UDim2.new(1, -16, 1, -58)
+body.BackgroundTransparency = 1
+body.Parent = main
+
+local sidebar = Instance.new("Frame")
+sidebar.Size = UDim2.new(0, 104, 1, 0)
+sidebar.BackgroundColor3 = PANEL
+sidebar.Parent = body
+Instance.new("UICorner", sidebar).CornerRadius =
+    UDim.new(0, 8)
+
+local pageArea = Instance.new("Frame")
+pageArea.Position = UDim2.fromOffset(112, 0)
+pageArea.Size = UDim2.new(1, -112, 1, 0)
+pageArea.BackgroundColor3 = PANEL
+pageArea.ClipsDescendants = true
+pageArea.Parent = body
+Instance.new("UICorner", pageArea).CornerRadius =
+    UDim.new(0, 8)
+
+local pages = {}
+local currentPage
+local tabs = {}
+
+local function createPage(name)
+    local page = Instance.new("ScrollingFrame")
+    page.Name = name
+    page.Size = UDim2.fromScale(1, 1)
+    page.BackgroundTransparency = 1
+    page.BorderSizePixel = 0
+    page.ScrollBarThickness = 3
+    page.ScrollBarImageColor3 = BLUE
+    page.AutomaticCanvasSize = Enum.AutomaticSize.Y
+    page.CanvasSize = UDim2.new()
+    page.Visible = false
+    page.Parent = pageArea
+
+    local pad = Instance.new("UIPadding", page)
+    pad.PaddingTop = UDim.new(0, 8)
+    pad.PaddingLeft = UDim.new(0, 8)
+    pad.PaddingRight = UDim.new(0, 8)
+    pad.PaddingBottom = UDim.new(0, 8)
+
+    local layout = Instance.new("UIListLayout", page)
+    layout.Padding = UDim.new(0, 7)
+    layout.SortOrder = Enum.SortOrder.LayoutOrder
+
+    pages[name] = page
+    return page
+end
+
+local function addLabel(page, text)
     local label = Instance.new("TextLabel")
-    label.Size = UDim2.new(1, -4, 0, height or 42)
-    label.BackgroundColor3 = panelBlue
-    label.Text = "  " .. text
-    label.TextColor3 = textColor
-    label.Font = Enum.Font.GothamSemibold
+    label.Size = UDim2.new(1, 0, 0, 32)
+    label.BackgroundTransparency = 1
+    label.Text = text
+    label.TextColor3 = BLUE
+    label.Font = Enum.Font.GothamBold
     label.TextSize = 14
     label.TextWrapped = true
-    label.TextXAlignment = Enum.TextXAlignment.Left
-    label.Parent = content
-
-    local c = Instance.new("UICorner")
-    c.CornerRadius = UDim.new(0, 8)
-    c.Parent = label
+    label.Parent = page
     return label
 end
 
-local function addToggle(text)
-    local row = Instance.new("Frame")
-    row.Size = UDim2.new(1, -4, 0, 42)
-    row.BackgroundColor3 = panelBlue
-    row.Parent = content
+local function addButton(page, text, callback)
+    local b = Instance.new("TextButton")
+    b.Size = UDim2.new(1, 0, 0, 36)
+    b.BackgroundColor3 = Color3.fromRGB(37, 53, 74)
+    b.Text = text
+    b.TextColor3 = WHITE
+    b.Font = Enum.Font.GothamMedium
+    b.TextSize = 12
+    b.TextWrapped = true
+    b.Parent = page
 
-    local c = Instance.new("UICorner")
-    c.CornerRadius = UDim.new(0, 8)
-    c.Parent = row
+    Instance.new("UICorner", b).CornerRadius =
+        UDim.new(0, 7)
 
-    local label = Instance.new("TextLabel")
-    label.Size = UDim2.new(1, -72, 1, 0)
-    label.Position = UDim2.fromOffset(10, 0)
-    label.BackgroundTransparency = 1
-    label.Text = text
-    label.TextColor3 = textColor
-    label.Font = Enum.Font.Gotham
-    label.TextSize = 12
-    label.TextXAlignment = Enum.TextXAlignment.Left
-    label.Parent = row
-
-    local button = Instance.new("TextButton")
-    button.Size = UDim2.fromOffset(48, 25)
-    button.Position = UDim2.new(1, -56, 0.5, -12)
-    button.BackgroundColor3 = Color3.fromRGB(65, 75, 95)
-    button.Text = "OFF"
-    button.TextColor3 = textColor
-    button.Font = Enum.Font.GothamBold
-    button.TextSize = 10
-    button.Parent = row
-
-    local bc = Instance.new("UICorner")
-    bc.CornerRadius = UDim.new(1, 0)
-    bc.Parent = button
-
-    local enabled = false
-    button.Activated:Connect(function()
-        enabled = not enabled
-        button.Text = enabled and "ON" or "OFF"
-        button.BackgroundColor3 = enabled
-            and blue or Color3.fromRGB(65, 75, 95)
-    end)
+    b.Activated:Connect(callback)
+    return b
 end
 
-local function showPage(page)
-    clearContent()
+local function addToggle(page, text, callback)
+    local enabled = false
+    local b
 
-    if page == "Trang chủ" then
-        addLabel("Chào mừng đến với NopHub!", 48)
-        addLabel("Người chơi: " .. player.DisplayName)
-        addLabel("Tên tài khoản: " .. player.Name)
-        addLabel("Phiên bản: V1 Blue Edition")
-        addLabel("Các chức năng cần tích hợp với game.")
-    elseif page == "Sự kiện" then
-        addLabel("SỰ KIỆN", 42)
-        addToggle("Thông báo sự kiện")
-        addToggle("Tự nhận thưởng - giao diện")
-        addToggle("Tự trang bị - giao diện")
-        addLabel("Đua xe | Sao băng | Bắt bướm | Phòng Lab")
-    elseif page == "Cày cuốc" then
-        addLabel("CHUỒNG ẤP", 42)
-        addToggle("Tự động đặt trứng - giao diện")
-        addToggle("Tự động ấp - giao diện")
-        addLabel("MÁY TẬP", 42)
-        addToggle("Auto máy chạy bộ - giao diện")
-        addLabel("QUẢN LÝ", 42)
-        addToggle("Tự bán vật phẩm - giao diện")
-    elseif page == "Cướp trứng" then
-        addLabel("CHỌN KHU VỰC", 42)
+    local function refresh()
+        b.Text = text .. (enabled and "  [ON]" or "  [OFF]")
+        b.BackgroundColor3 = enabled and BLUE
+            or Color3.fromRGB(37, 53, 74)
+    end
 
-        local zones = {
-            "Khu vực mặc định",
-            "Khu vực trứng",
-            "Khu vực sự kiện"
-        }
-        local index = 1
+    b = addButton(page, text .. "  [OFF]", function()
+        enabled = not enabled
+        refresh()
+        callback(enabled)
+    end)
 
-        local zoneButton = Instance.new("TextButton")
-        zoneButton.Size = UDim2.new(1, -4, 0, 42)
-        zoneButton.BackgroundColor3 = blue
-        zoneButton.Text = zones[index] .. "  ▼"
-        zoneButton.TextColor3 = textColor
-        zoneButton.Font = Enum.Font.GothamBold
-        zoneButton.TextSize = 13
-        zoneButton.Parent = content
+    return b
+end
 
-        local zc = Instance.new("UICorner")
-        zc.CornerRadius = UDim.new(0, 8)
-        zc.Parent = zoneButton
+local function showPage(name)
+    if currentPage then
+        currentPage.Visible = false
+    end
 
-        zoneButton.Activated:Connect(function()
-            index = index % #zones + 1
-            zoneButton.Text = zones[index] .. "  ▼"
-        end)
+    currentPage = pages[name]
+    currentPage.Visible = true
 
-        addToggle("Tự động cướp - giao diện")
-        addToggle("Bộ lọc trứng - giao diện")
-        addLabel("Các lựa chọn hiện chưa tác động đến gameplay.")
-    elseif page == "Cài đặt" then
-        addToggle("Hiệu ứng giao diện")
-        addLabel("NopHub V1 | Blue Edition")
-        addLabel("Nhấn X để đóng menu.")
+    for tabName, tab in pairs(tabs) do
+        tab.BackgroundColor3 =
+            tabName == name and BLUE or BG
     end
 end
 
-for i, page in ipairs(pages) do
-    local button = Instance.new("TextButton")
-    button.Size = UDim2.new(1, -10, 0, 42)
-    button.Position = UDim2.fromOffset(5, 8 + (i - 1) * 49)
-    button.BackgroundColor3 = panelBlue
-    button.Text = page
-    button.TextColor3 = textColor
-    button.Font = Enum.Font.GothamSemibold
-    button.TextSize = 11
-    button.Parent = sidebar
+local names = {
+    "Trang chu",
+    "Su kien",
+    "Cay cuoc",
+    "Cai dat"
+}
 
-    local bc = Instance.new("UICorner")
-    bc.CornerRadius = UDim.new(0, 8)
-    bc.Parent = button
+for i, name in ipairs(names) do
+    local page = createPage(name)
 
-    button.Activated:Connect(function()
-        for _, child in ipairs(sidebar:GetChildren()) do
-            if child:IsA("TextButton") then
-                child.BackgroundColor3 = panelBlue
-            end
-        end
-        button.BackgroundColor3 = blue
-        showPage(page)
+    local tab = Instance.new("TextButton")
+    tab.Size = UDim2.new(1, -8, 0, 38)
+    tab.Position = UDim2.fromOffset(4, 5 + (i - 1) * 43)
+    tab.BackgroundColor3 = BG
+    tab.Text = name
+    tab.TextColor3 = WHITE
+    tab.Font = Enum.Font.GothamMedium
+    tab.TextSize = 11
+    tab.Parent = sidebar
+
+    Instance.new("UICorner", tab).CornerRadius =
+        UDim.new(0, 6)
+
+    tabs[name] = tab
+    tab.Activated:Connect(function()
+        showPage(name)
     end)
 end
 
-showPage("Trang chủ")
+-- TRANG CHU
+local home = pages["Trang chu"]
+addLabel(home, "CHAO MUNG DEN NOPHUB")
+
+local status = addLabel(home, "Trang thai: San sang")
+status.TextColor3 = WHITE
+status.Font = Enum.Font.Gotham
+
+addButton(home, "Kiem tra nhan vat", function()
+    local char = player.Character
+    local hum = char and char:FindFirstChildOfClass("Humanoid")
+
+    status.Text = hum
+        and ("Nhan vat san sang | HP: " ..
+            math.floor(hum.Health))
+        or "Nhan vat chua san sang"
+end)
+
+addButton(home, "Dat lai trang thai", function()
+    status.Text = "Trang thai: San sang"
+end)
+
+-- SU KIEN: TOGGLE GIA LAP
+local events = pages["Su kien"]
+addLabel(events, "SU KIEN - DEMO")
+
+local eventStatus = addLabel(events, "Chua bat")
+eventStatus.TextColor3 = WHITE
+eventStatus.Font = Enum.Font.Gotham
+
+addToggle(events, "Che do mau", function(on)
+    eventStatus.Text = on and
+        "Che do mau: dang bat" or "Che do mau: da tat"
+end)
+
+-- CAY CUOC: CAC NUT DEMO
+local farm = pages["Cay cuoc"]
+addLabel(farm, "CONG CU DEMO")
+
+local count = 0
+local counterLabel = addLabel(farm, "So lan bam: 0")
+counterLabel.TextColor3 = WHITE
+counterLabel.Font = Enum.Font.Gotham
+
+addButton(farm, "Tang bo dem", function()
+    count += 1
+    counterLabel.Text = "So lan bam: " .. count
+end)
+
+addToggle(farm, "Thong bao mau", function(on)
+    counterLabel.Text = on and
+        "Thong bao mau: ON" or
+        ("So lan bam: " .. count)
+end)
+
+-- CAI DAT
+local settings = pages["Cai dat"]
+addLabel(settings, "CAI DAT GIAO DIEN")
+
+addButton(settings, "Doi mau xanh sang cyan", function()
+    outline.Color = Color3.fromRGB(0, 230, 255)
+    header.BackgroundColor3 = Color3.fromRGB(0, 120, 220)
+end)
+
+addButton(settings, "Dat lai mau xanh", function()
+    outline.Color = BLUE
+    header.BackgroundColor3 = BLUE
+end)
+
+addButton(settings, "Hien lai menu", function()
+    main.Visible = true
+end)
+
+-- X va nut tru chi THU GON, KHONG XOA GUI
+local collapsed = false
+
+local function setCollapsed(value)
+    collapsed = value
+    body.Visible = not collapsed
+    main.Size = collapsed
+        and UDim2.fromOffset(340, 42)
+        or UDim2.fromOffset(340, 300)
+    minimize.Text = collapsed and "+" or "−"
+end
+
+minimize.Activated:Connect(function()
+    setCollapsed(not collapsed)
+end)
+
+close.Activated:Connect(function()
+    setCollapsed(true)
+end)
+
+-- KEOL THA BANG CAM UNG / CHUOT
+local dragging = false
+local dragStart
+local startPos
+local dragInput
+
+header.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1
+        or input.UserInputType == Enum.UserInputType.Touch then
+        dragging = true
+        dragStart = input.Position
+        startPos = main.Position
+
+        input.Changed:Connect(function()
+            if input.UserInputState == Enum.UserInputState.End then
+                dragging = false
+            end
+        end)
+    end
+end)
+
+header.InputChanged:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseMovement
+        or input.UserInputType == Enum.UserInputType.Touch then
+        dragInput = input
+    end
+end)
+
+UIS.InputChanged:Connect(function(input)
+    if dragging and (input == dragInput
+        or input.UserInputType == Enum.UserInputType.Touch) then
+        local delta = input.Position - dragStart
+        main.Position = UDim2.new(
+            startPos.X.Scale,
+            startPos.X.Offset + delta.X,
+            startPos.Y.Scale,
+            startPos.Y.Offset + delta.Y
+        )
+    end
+end)
+
+showPage("Trang chu")
+print("NopHub Blue V5 loaded")
