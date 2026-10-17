@@ -1,6 +1,6 @@
 
 -- NopHub Blue V5 - Mobile UI
--- Giao dien demo, co chua chuc nang exploit
+-- Giao dien demo, khong chua chuc nang exploit
 
 local Players = game:GetService("Players")
 local UIS = game:GetService("UserInputService")
